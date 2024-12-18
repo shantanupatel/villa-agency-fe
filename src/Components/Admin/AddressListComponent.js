@@ -7,6 +7,9 @@ import Button from "react-bootstrap/Button";
 // import Form from "react-bootstrap/Form";
 import ModalComponent from "../Modal/ModalComponent";
 import ToastComponent from "../Toast/ToastComponent";
+import { AddressListColumnDefs } from "../../constants/ColumnDefs";
+import * as DIALOGSIZES from "../../constants/DialogSize";
+import { ToastConfig } from "../../constants/ToastConfig";
 // import {
 //   CitySelect,
 //   CountrySelect,
@@ -17,16 +20,19 @@ import ToastComponent from "../Toast/ToastComponent";
 // import { Formik, Form, Field, ErrorMessage } from "formik";
 // import * as Yup from "yup";
 
+const dialogWidth = DIALOGSIZES.EXTRALARGE;
+
 const AddressListComponent = () => {
   // const [showModal, setShowModal] = useState(false);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  // const [bg, setBg] = useState("danger");
+  const [bg, setBg] = useState("success");
   const [showToast, setShowToast] = useState(false);
   // const [toastDelay, setToastDelay] = useState(5000);
   const [toastAutohide, setToastAutohide] = useState(false);
   const [toastHeader, setToastHeader] = useState();
   const [toastBody, setToastBody] = useState();
+  const [toastAddBg, setToastAddBg] = useState();
   const [showAddToast, setShowAddToast] = useState(false);
   const [toastAddAutohide, setToastAddAutohide] = useState(false);
   const [toastAddHeader, setToastAddHeader] = useState();
@@ -40,55 +46,7 @@ const AddressListComponent = () => {
   // };
   // const [modalData, setModalData] = useState();
   const [rowData, setRowData] = useState([]);
-  const [colDefs] = useState([
-    /* {
-      field: "",
-      checkboxSelection: true,
-      editable: true,
-      width: 50,
-    }, */
-    /* {
-      field: "actions",
-      headerName: "",
-      cellRenderer: GridActions,
-      width: 50,
-    }, */
-    /* { field: "id", headerName: "ID", width: 90 }, */
-    {
-      field: "street",
-      headerName: "Street",
-      editable: true,
-      // flex: 2,
-    },
-    {
-      field: "city",
-      headerName: "City",
-      /* type: "number", */
-      editable: true,
-      // flex: 1,
-    },
-    {
-      field: "state",
-      headerName: "State",
-      editable: true,
-      // flex: 1,
-    },
-    {
-      field: "zip",
-      headerName: "Zip",
-      // flex: 1,
-    },
-    {
-      field: "country",
-      headerName: "Country",
-      // flex: 1,
-    },
-    {
-      field: "createdDate",
-      headerName: "Created Date",
-      // flex: 1,
-    },
-  ]);
+  const [colDefs] = useState(AddressListColumnDefs);
 
   // const [region, setRegion] = useState("");
   // const [countryid, setCountryid] = useState(0);
@@ -154,12 +112,19 @@ const AddressListComponent = () => {
     fetch(process.env.REACT_APP_API_URL + "/addresses")
       .then((res) => res.json())
       .then((json) => {
-        console.log(json);
         setRowData(json.data);
         setShowToast(true);
-        setToastHeader("test header");
+        setBg(ToastConfig.success.bg);
+        setToastHeader(ToastConfig.success.label);
         setToastBody(json.message);
         setToastAutohide(true);
+      })
+      .catch((err) => {
+        setShowToast(true);
+        setBg(ToastConfig.failure.bg);
+        setToastHeader(ToastConfig.failure.label);
+        setToastBody("Error retrieving list of addresses");
+        setToastAutohide(false);
       });
   }
 
@@ -219,12 +184,18 @@ const AddressListComponent = () => {
       // console.log(json.message);
       setLoading(false);
       setShowAddToast(true);
-      setToastAddHeader("test");
+      setToastAddBg(ToastConfig.success.bg);
+      setToastAddHeader(ToastConfig.success.label);
       setToastAddBody(json.message);
       setToastAddAutohide(true);
       fetchAddressData();
     } catch (error) {
-      console.error("An error occurred when submitting the form", error);
+      // console.error("An error occurred when submitting the form", error);
+      setShowAddToast(true);
+      setToastAddBg(ToastConfig.failure.bg);
+      setToastAddHeader(ToastConfig.failure.label);
+      setToastAddBody("Error saving new address");
+      setToastAddAutohide(false);
     }
   };
 
@@ -258,7 +229,8 @@ const AddressListComponent = () => {
         />
 
         <ToastComponent
-          // bg={bg}
+          // bg={ToastConfig.success.bg}
+          bg={bg}
           show={showToast}
           // delay={toastDelay}
           handleToastClose={handleToastClose}
@@ -269,7 +241,7 @@ const AddressListComponent = () => {
 
         {open && (
           <ModalComponent
-            size="lg"
+            size={dialogWidth}
             show={open}
             loading={loading}
             modalTitle="Add Address"
