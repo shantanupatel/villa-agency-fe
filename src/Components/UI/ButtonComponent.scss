@@ -1,0 +1,10 @@
+@import "../../Styles/variables";
+@import "../../Styles/mixins";
+
+.btn {
+  &-secondary {
+    background: $btn-secondary;
+    border-radius: 25px;
+    padding: 10px 20px;
+  }
+}
