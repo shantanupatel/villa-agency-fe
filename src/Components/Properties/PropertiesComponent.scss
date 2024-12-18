@@ -1,0 +1,76 @@
+@import "/src/Styles/variables";
+@import "/src/Styles/mixins";
+
+.properties {
+  width: 70%;
+  margin: 70px auto 20px;
+
+  @include rwd($screen-md-min) {
+    width: 100%;
+  }
+
+  .heading {
+    padding: 40px 0;
+
+    h4 {
+      color: $breadcrumb-color;
+      font-size: 15px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    h2 {
+      color: $text-primary;
+      font-size: 40px;
+      font-weight: 700;
+      // margin-bottom: 60px;
+      text-transform: capitalize;
+    }
+  }
+
+  &-list {}
+
+  .property {
+    background-color: $deals-bg;
+    border-radius: 10px;
+    padding: 20px;
+
+    &-image {
+      img {
+        width: 100%;
+        border-radius: 10px;
+      }
+    }
+
+    &-details {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 20px 0;
+      
+      &-type {
+        background-color: $fun-fact;
+        color: $text-primary;
+        display: inline-block;
+        padding: 10px;
+      }
+  
+      &-price {
+        color: $btn-primary;
+        font-weight: 700;
+      }
+    }
+
+    &-heading {
+      color: $text-primary;
+      font-weight: 700;
+      margin-bottom: 30px;
+    }
+
+    &-features {
+      border-bottom: 1px solid #eaeaea;
+      margin-bottom: 30px;
+      padding-bottom: 30px;
+    }
+  }
+}
