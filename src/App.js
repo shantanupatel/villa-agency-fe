@@ -1,23 +1,35 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.scss";
+import HeaderComponent from "./Components/Header/HeaderComponent";
+import { Outlet } from "react-router-dom";
+
+import FooterComponent from "./Components/FooterComponent";
+/* import { Route, Routes } from "react-router-dom";
+import HomeComponent from "./Components/Home/HomeComponent";
+import PropertiesComponent from "./Components/Properties/PropertiesComponent";
+import EnquiryListComponent from "./Components/Admin/EnquiryListComponent";
+import AddressListComponent from "./Components/Admin/EnquiryListComponent";
+import AdminComponent from "./Components/Admin/AdminComponent";
+import ContactUsComponent from "./Components/ContactUsComponent"; */
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <HeaderComponent></HeaderComponent>
+
+      {/* <Routes>
+        <Route path="/" element={<HomeComponent />} />
+        <Route path="properties" element={<PropertiesComponent />} />
+        <Route path="admin" element={<AdminComponent />}>
+          <Route index element={EnquiryListComponent} />
+          <Route path="addresses" element={AddressListComponent} />
+        </Route>
+        <Route path="enquiries" element={EnquiryListComponent} />
+        <Route path="contact" element={ContactUsComponent} />
+      </Routes> */}
+
+      <Outlet />
+
+      <FooterComponent />
     </div>
   );
 }
