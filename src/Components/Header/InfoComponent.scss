@@ -1,0 +1,29 @@
+@import "/src/Styles/variables";
+
+.info {
+  height: 100%;
+  display: flex;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+
+  &-link {
+    align-self: center;
+    margin-right: 25px;
+    padding-right: 25px;
+    color: #7a7a7a;
+
+    svg {
+      color: $btn-primary;
+      font-size: 20px;
+      margin-right: 8px;
+    }
+
+    &:last-child {
+      margin: 0;
+      padding: 0;
+    }
+
+
+  }
+}
