@@ -1,0 +1,15 @@
+@import "/src/Styles/variables";
+@import "/src/Styles/mixins";
+
+footer {
+  min-height: 100px;;
+  background-color: $btn-secondary;
+  color: #fff;
+  line-height: 100px;
+  margin-top: 75px;
+  text-align: center;
+
+  @include rwd($screen-lg-min) {
+    margin-top: 150px;
+  }
+}
