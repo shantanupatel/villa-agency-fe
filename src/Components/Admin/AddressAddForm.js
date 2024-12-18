@@ -149,14 +149,6 @@ const AddressAddForm = (props) => {
           <ErrorMessage name="zip" component="div" />
         </div>
       </form>
-      {/* <>
-        <h1>values</h1>
-        {country && country}
-        <br />
-        {st && st}
-        <br />
-        {city && city}
-      </> */}
     </div>
   );
 };
