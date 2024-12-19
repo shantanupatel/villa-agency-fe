@@ -7,18 +7,20 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "owl.carousel/dist/assets/owl.carousel.css";
 import "owl.carousel/dist/assets/owl.theme.default.css";
 import HomeComponent from "./Components/Home/HomeComponent";
-import ErrorPage from "./RouteNotFound";
+import RouteNotFound from "./RouteNotFound";
 import PropertiesComponent from "./Components/Properties/PropertiesComponent";
 import AdminComponent from "./Components/Admin/AdminComponent";
 import EnquiryListComponent from "./Components/Admin/EnquiryListComponent";
 import AddressListComponent from "./Components/Admin/AddressListComponent";
 import App from "./App";
+import LoginComponent from "./Components/Login/LoginComponent";
+import SignUpComponent from "./Components/SignUp/SignUpComponent";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
-    errorElement: <ErrorPage />,
+    // errorElement: <ErrorPage />,
     children: [
       {
         path: "",
@@ -40,11 +42,19 @@ const router = createBrowserRouter([
             path: "addresses",
             element: <AddressListComponent />,
           },
+          {
+            path: "login",
+            element: <LoginComponent />,
+          },
+          {
+            path: "signup",
+            element: <SignUpComponent />,
+          },
         ],
       },
       {
-        path: "enquiries",
-        element: <EnquiryListComponent />,
+        path: "*",
+        element: <RouteNotFound timeoutSeconds="5" />,
       },
     ],
   },
