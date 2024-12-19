@@ -15,6 +15,7 @@ import AddressListComponent from "./Components/Admin/AddressListComponent";
 import App from "./App";
 import LoginComponent from "./Components/Login/LoginComponent";
 import SignUpComponent from "./Components/SignUp/SignUpComponent";
+import AdminDashboard from "Components/Admin/AdminDashboard";
 
 const router = createBrowserRouter([
   {
@@ -34,6 +35,10 @@ const router = createBrowserRouter([
         path: "admin",
         element: <AdminComponent />,
         children: [
+          {
+            path: "dashboard",
+            element: <AdminDashboard />,
+          },
           {
             path: "enquiries",
             element: <EnquiryListComponent />,
