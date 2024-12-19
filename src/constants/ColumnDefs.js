@@ -37,3 +37,34 @@ export const AddressListColumnDefs = [
     headerName: "Created Date",
   },
 ];
+
+export const EnquiryListColumnDefs = [
+  { field: "id", headerName: "ID", maxWidth: 50 },
+  {
+    field: "fullname",
+    headerName: "Name",
+    editable: true,
+  },
+  {
+    field: "email",
+    headerName: "Email Address",
+    editable: true,
+  },
+  {
+    field: "subject",
+    headerName: "Subject",
+    editable: true,
+  },
+  {
+    field: "message",
+    headerName: "Message",
+  },
+  {
+    field: "source",
+    headerName: "Source",
+  },
+  {
+    field: "createdDate",
+    headerName: "Created Date",
+  },
+];
