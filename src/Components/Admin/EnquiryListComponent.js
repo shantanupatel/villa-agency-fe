@@ -1,66 +1,23 @@
 import { useEffect, useState } from "react";
 import GridComponent from "../Grid/GridComponent";
 import ToastComponent from "../Toast/ToastComponent";
+import { EnquiryListColumnDefs } from "../../constants/ColumnDefs";
+import { ToastConfig } from "../../constants/ToastConfig";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 
 const EnquiryListComponent = () => {
   // const [enquiries, setEnquiries] = useState([]);
   // let enquiries = [];
   // let rowData;
   const [showToast, setShowToast] = useState(false);
+  const [bg, setBg] = useState("success");
   // const [toastDelay, setToastDelay] = useState(5000);
-  const [toastAutohide, settoastAutohide] = useState(false);
+  const [toastAutohide, setToastAutohide] = useState(false);
   const [toastHeader, setToastHeader] = useState();
   const [toastBody, setToastBody] = useState();
   const [rowData, setRowData] = useState([]);
-  const [colDefs] = useState([
-    /* {
-      field: "",
-      checkboxSelection: true,
-      editable: true,
-      width: 50,
-    }, */
-    /* {
-      field: "actions",
-      headerName: "",
-      cellRenderer: GridActions,
-      width: 50,
-    }, */
-    { field: "id", headerName: "ID", width: 90 },
-    {
-      field: "fullname",
-      headerName: "Name",
-      editable: true,
-      // flex: 2,
-    },
-    {
-      field: "email",
-      headerName: "Email Address",
-      // type: "number",
-      editable: true,
-      // flex: 1,
-    },
-    {
-      field: "subject",
-      headerName: "Subject",
-      editable: true,
-      // flex: 1,
-    },
-    {
-      field: "message",
-      headerName: "Message",
-      // flex: 1,
-    },
-    {
-      field: "source",
-      headerName: "Source",
-      // flex: 1,
-    },
-    {
-      field: "createdDate",
-      headerName: "Created Date",
-      // flex: 1,
-    },
-  ]);
+  const [colDefs] = useState(EnquiryListColumnDefs);
 
   useEffect(() => {
     fetchEnquiriesData();
@@ -76,12 +33,20 @@ const EnquiryListComponent = () => {
       .then((json) => {
         console.log(json);
         setRowData(json.data);
+        setBg(ToastConfig.success.bg);
         setShowToast(true);
-        setToastHeader("test header");
+        setToastHeader(ToastConfig.success.label);
         setToastBody(json.message);
-        settoastAutohide(true);
+        setToastAutohide(true);
       })
-      .catch((err) => console.log(err.message));
+      .catch((err) => {
+        // console.log(err.message)
+        setShowToast(true);
+        setBg(ToastConfig.failure.bg);
+        setToastHeader(ToastConfig.failure.label);
+        setToastBody("Error retrieving list of enquiries");
+        setToastAutohide(false);
+      });
 
     // console.log(rowData);
   }
@@ -108,8 +73,17 @@ const EnquiryListComponent = () => {
 
       {/* <AgGridReact rowData={rowData} columnDefs={colDefs} /> */}
 
+      <div className="section-heading">
+        <Row>
+          <Col>
+            <h4>Enquiry</h4>
+          </Col>
+          <Col></Col>
+        </Row>
+      </div>
+
       <ToastComponent
-        // bg={bg}
+        bg={bg}
         show={showToast}
         // delay={toastDelay}
         handleToastClose={handleToastClose}
