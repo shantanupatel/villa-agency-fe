@@ -6,15 +6,15 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 import "owl.carousel/dist/assets/owl.carousel.css";
 import "owl.carousel/dist/assets/owl.theme.default.css";
-import HomeComponent from "./Components/Home/HomeComponent";
-import RouteNotFound from "./RouteNotFound";
-import PropertiesComponent from "./Components/Properties/PropertiesComponent";
-import AdminComponent from "./Components/Admin/AdminComponent";
-import EnquiryListComponent from "./Components/Admin/EnquiryListComponent";
-import AddressListComponent from "./Components/Admin/AddressListComponent";
+import HomeComponent from "Components/Home/HomeComponent";
+import RouteNotFound from "RouteNotFound";
+import PropertiesComponent from "Components/Properties/PropertiesComponent";
+import AdminComponent from "Components/Admin/AdminComponent";
+import EnquiryListComponent from "Components/Admin/EnquiryListComponent";
+import AddressListComponent from "Components/Admin/AddressListComponent";
 import App from "./App";
-import LoginComponent from "./Components/Login/LoginComponent";
-import SignUpComponent from "./Components/SignUp/SignUpComponent";
+import LoginComponent from "Components/Login/LoginComponent";
+import SignUpComponent from "Components/SignUp/SignUpComponent";
 import AdminDashboard from "Components/Admin/AdminDashboard";
 
 const router = createBrowserRouter([
