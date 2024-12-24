@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { logout } from "services/auth.service";
 
 const AdminDashboard = () => {
   const history = useNavigate();
@@ -6,6 +7,7 @@ const AdminDashboard = () => {
   const handleLogout = () => {
     // Perform logout actions here (e.g., clear session, remove authentication token)
     // After logout, redirect to the login page
+    logout();
     history("/admin/login");
   };
 
