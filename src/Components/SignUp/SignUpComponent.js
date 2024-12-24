@@ -1,21 +1,26 @@
+import { useState } from "react";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import ButtonComponent from "Components/UI/ButtonComponent";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
+import { register } from "services/auth.service";
+import ToastComponent from "Components/Toast/ToastComponent";
+import { ToastConfig } from "constants/ToastConfig";
 
 const initialValues = {
-  fullname: "",
+  username: "",
   email: "",
   password: "",
   // role: "",
 };
 
 const schema = Yup.object().shape({
-  fullname: Yup.string()
-    .min(1, "Must be at least 1 character or more.")
-    .required("Full name is required."),
+  username: Yup.string()
+    .min(1, "User name must be at least 1 character or more.")
+    .max(20, "User name must have maximum of 20 characters")
+    .required("User name is required."),
   email: Yup.string()
     .email("Invalid email address")
     .required("Email address is required."),
@@ -27,19 +32,44 @@ const schema = Yup.object().shape({
 });
 
 const SignUpComponent = () => {
-  const history = useNavigate();
+  // const history = useNavigate();
+  const [bg, setBg] = useState("success");
+  const [showToast, setShowToast] = useState(false);
+  const [toastHeader, setToastHeader] = useState();
+  const [toastBody, setToastBody] = useState();
+  const [toastAutohide, setToastAutohide] = useState(false);
 
   const handleSubmit = async (values) => {
-    console.log(values);
+    const { username, email, password } = values;
+    const payload = {
+      username: username,
+      email: email,
+      role: ["admin"],
+      password: password,
+    };
 
-    history("/admin");
+    register(payload).then((response) => {
+      const data = response.data;
+
+      if (data.httpStatus === 400) {
+        setShowToast(true);
+        setBg(ToastConfig.info.bg);
+        setToastHeader(ToastConfig.info.label);
+        setToastBody(data.message);
+        setToastAutohide(true);
+      } else {
+        setShowToast(true);
+        setBg(ToastConfig.success.bg);
+        setToastHeader(ToastConfig.success.label);
+        setToastBody(data.message);
+        setToastAutohide(true);
+      }
+    });
   };
 
-  /* function handleCityChange(e) {
-    setSelectedCity(selectedCity);
-
-    handleChange(e);
-  } */
+  const handleToastClose = () => {
+    setShowToast(false);
+  };
 
   return (
     <>
@@ -50,6 +80,15 @@ const SignUpComponent = () => {
           </Col>
         </Row>
       </div>
+
+      <ToastComponent
+        bg={bg}
+        show={showToast}
+        handleToastClose={handleToastClose}
+        header={toastHeader}
+        body={toastBody}
+        autohide={toastAutohide}
+      />
 
       <Row>
         <Col sm={{ span: 6, offset: 3 }}>
@@ -64,14 +103,14 @@ const SignUpComponent = () => {
                 <div className="form-group">
                   <Row>
                     <Col md="4">
-                      <label htmlFor="fullname">Full Name</label>
+                      <label htmlFor="username">User Name</label>
                     </Col>
                     <Col md="8">
                       <Field
-                        name="fullname"
+                        name="username"
                         placeholder="Full Name"
                         className="form-control"></Field>
-                      <ErrorMessage name="fullname" component="div" />
+                      <ErrorMessage name="username" component="div" />
                     </Col>
                   </Row>
                 </div>
