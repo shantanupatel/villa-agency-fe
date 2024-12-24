@@ -4,6 +4,7 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import ButtonComponent from "Components/UI/ButtonComponent";
 import { useNavigate } from "react-router-dom";
+import { login } from "services/auth.service";
 
 const initialValues = {
   username: "",
@@ -16,17 +17,21 @@ const schema = Yup.object().shape({
     .required("Username is required"),
   password: Yup.string()
     .required("No password provided.")
-    .min(8, "Password is too short - should be 8 chars minimum.")
+    .min(8, "Password is too short - should be minimum 8 chars.")
     .matches(/[a-zA-Z]/, "Password can only contain Latin letters."),
 });
 
 const LoginComponent = (props) => {
   const history = useNavigate();
-
   const handleSubmit = async (values) => {
-    console.log(values);
+    const { username, password } = values;
 
-    history("/admin/dashboard");
+    const payload = {
+      username: username,
+      password: password,
+    };
+
+    login(payload).then(() => history("/admin/dashboard"));
   };
 
   return (
@@ -52,7 +57,7 @@ const LoginComponent = (props) => {
                 <div className="form-group">
                   <Row>
                     <Col md="4">
-                      <label htmlFor="username">Email</label>
+                      <label htmlFor="username">username</label>
                     </Col>
                     <Col md="8">
                       <Field
