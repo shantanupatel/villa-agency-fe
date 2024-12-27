@@ -4,21 +4,13 @@ import AddressAddComponent from "./AddressAddComponent";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
-// import Form from "react-bootstrap/Form";
 import ModalComponent from "../Modal/ModalComponent";
 import ToastComponent from "../Toast/ToastComponent";
 import { AddressListColumnDefs } from "../../constants/ColumnDefs";
 import * as DIALOGSIZES from "../../constants/DialogSize";
 import { ToastConfig } from "../../constants/ToastConfig";
-// import {
-//   CitySelect,
-//   CountrySelect,
-//   StateSelect,
-//   RegionSelect,
-// } from "react-country-state-city";
-// import "react-country-state-city/dist/react-country-state-city.css";
-// import { Formik, Form, Field, ErrorMessage } from "formik";
-// import * as Yup from "yup";
+import { authHeader } from "services/auth-header";
+import axios from "axios";
 
 const dialogWidth = DIALOGSIZES.EXTRALARGE;
 
@@ -37,93 +29,40 @@ const AddressListComponent = () => {
   const [toastAddAutohide, setToastAddAutohide] = useState(false);
   const [toastAddHeader, setToastAddHeader] = useState();
   const [toastAddBody, setToastAddBody] = useState();
-  // const toastConfig = {
-  //   show: true,
-  //   delay: 3000,
-  //   autohide: true,
-  //   header: "test header",
-  //   body: "",
-  // };
-  // const [modalData, setModalData] = useState();
   const [rowData, setRowData] = useState([]);
   const [colDefs] = useState(AddressListColumnDefs);
-
-  // const [region, setRegion] = useState("");
-  // const [countryid, setCountryid] = useState(0);
-  // const [stateid, setstateid] = useState(0);
-
-  /* const initialValues = {
-    fullname: "",
-    email: "",
-    subject: "",
-    message: "",
-    source: "Web",
-  }; */
-
-  /* const schema = Yup.object().shape({
-    fullname: Yup.string()
-      .max(30, "Must be 30 characters or less")
-      .required("Required"),
-    email: Yup.string().email("Invalid email address").required("Required"),
-    subject: Yup.string()
-      .max(50, "Must be 50 characters or less")
-      .required("Required"),
-    message: Yup.string()
-      .max(200, "Must be 200 characters or less")
-      .required("Required"),
-    source: Yup.string()
-      .max(200, "Must be 200 characters or less")
-      .required("Required"),
-  }); */
-
-  /* const handleSubmit = async (values) => {
-    const requestOptions = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
-      },
-      body: JSON.stringify(values),
-      // body: values,
-    };
-    try {
-      const response = await fetch(
-        process.env.REACT_APP_API_URL + "/enquiries",
-        requestOptions
-      );
-
-      console.log("values: ", values);
-
-      if (response.ok) {
-        console.log("Form submitted", values);
-      } else {
-        console.error("An error occurred when submitting the form");
-      }
-    } catch (error) {
-      console.error("An error occurred when submitting the form", error);
-    }
-  }; */
 
   useEffect(() => {
     fetchAddressData();
   }, []);
 
   function fetchAddressData() {
-    fetch(process.env.REACT_APP_API_URL + "/addresses")
-      .then((res) => res.json())
-      .then((json) => {
-        setRowData(json.data);
+    axios
+      .get(process.env.REACT_APP_API_URL + "/addresses", {
+        // headers: authHeader(),
+        headers: {
+          Authorization: authHeader(),
+        },
+      })
+      .then((response) => {
+        setRowData(response.data.data);
         setShowToast(true);
         setBg(ToastConfig.success.bg);
         setToastHeader(ToastConfig.success.label);
-        setToastBody(json.message);
+        setToastBody(response.data.message);
         setToastAutohide(true);
       })
       .catch((err) => {
         setShowToast(true);
         setBg(ToastConfig.failure.bg);
         setToastHeader(ToastConfig.failure.label);
-        setToastBody("Error retrieving list of addresses");
+
+        if (err.status === 401) {
+          setToastBody("Invalid credentials. Kindly login again.");
+        } else {
+          setToastBody("Error retrieving list of addresses");
+        }
+
         setToastAutohide(false);
       });
   }
@@ -151,52 +90,40 @@ const AddressListComponent = () => {
   };
 
   const addNewAddress = async (values) => {
-    const requestOptions = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
-      },
-      body: JSON.stringify(values),
-    };
-    try {
-      const response = await fetch(
+    axios
+      .post(
         process.env.REACT_APP_API_URL + "/addresses",
-        requestOptions
-      );
-
-      /* console.log(response);
-      console.log(response.message);
-
-      if (response.ok) {
-        // console.log("Form submitted", values);
-        setOpen(false);
-      } else {
-        console.error("An error occurred when submitting the form");
-      } */
-
-      if (!response.ok) {
-        throw new Error(`Response status: ${response.status}`);
-      }
-
-      const json = await response.json();
-      // console.log(json);
-      // console.log(json.message);
-      setLoading(false);
-      setShowAddToast(true);
-      setToastAddBg(ToastConfig.success.bg);
-      setToastAddHeader(ToastConfig.success.label);
-      setToastAddBody(json.message);
-      setToastAddAutohide(true);
-      fetchAddressData();
-    } catch (error) {
-      // console.error("An error occurred when submitting the form", error);
-      setShowAddToast(true);
-      setToastAddBg(ToastConfig.failure.bg);
-      setToastAddHeader(ToastConfig.failure.label);
-      setToastAddBody("Error saving new address");
-      setToastAddAutohide(false);
-    }
+        JSON.stringify(values),
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            Authorization: authHeader(),
+          },
+        }
+      )
+      .then((res) => {
+        console.log(res);
+        setShowAddToast(true);
+        setToastAddBg(ToastConfig.success.bg);
+        setToastAddHeader(ToastConfig.success.label);
+        setToastAddBody(res.data.message);
+        setToastAddAutohide(true);
+        fetchAddressData();
+      })
+      .catch((err) => {
+        console.log(err);
+        setShowAddToast(true);
+        setToastAddBg(ToastConfig.failure.bg);
+        setToastAddHeader(ToastConfig.failure.label);
+        // setToastAddBody("Error saving new address");
+        if (err.status === 401) {
+          setToastAddBody("Invalid credentials. Kindly login again.");
+        } else {
+          setToastAddBody("Error saving new address");
+        }
+        setToastAddAutohide(false);
+      });
   };
 
   return (
