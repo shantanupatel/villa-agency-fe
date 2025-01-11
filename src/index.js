@@ -16,6 +16,7 @@ import App from "./App";
 import LoginComponent from "Components/Login/LoginComponent";
 import SignUpComponent from "Components/SignUp/SignUpComponent";
 import AdminDashboard from "Components/Admin/AdminDashboard";
+import ContactUsComponent from "Components/ContactUsComponent";
 
 const router = createBrowserRouter([
   {
@@ -30,6 +31,10 @@ const router = createBrowserRouter([
       {
         path: "properties",
         element: <PropertiesComponent />,
+      },
+      {
+        path: "contact",
+        element: <ContactUsComponent />,
       },
       {
         path: "admin",
