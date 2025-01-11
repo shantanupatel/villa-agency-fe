@@ -17,6 +17,7 @@ export default function GridComponent(props) {
         rowData={props.rowData}
         columnDefs={props.colDefs}
         rowSelection="multiple"
+        pagination="true"
       />
     </div>
   );
