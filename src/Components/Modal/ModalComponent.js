@@ -1,8 +1,11 @@
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Spinner from "react-bootstrap/Spinner";
+import { useFormikContext } from "formik";
 
 const ModalComponent = (props) => {
+  const { dirty, isValid } = useFormikContext();
+
   return (
     <Modal
       size={props.size}
@@ -24,16 +27,58 @@ const ModalComponent = (props) => {
         {props.modalBody}
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="secondary" onClick={props.onCancel}>
-          Close
-        </Button>
-        <Button
-          variant="primary"
-          type="submit"
-          form="foo"
-          onClick={props.doSubmit}>
-          Save Changes
-        </Button>
+        {props.formType === "add" ? (
+          <>
+            <Button variant="secondary" onClick={props.onCancel}>
+              Close
+            </Button>
+            <Button
+              variant="primary"
+              type="submit"
+              form="foo"
+              onClick={props.doSubmit}
+              disabled={!(isValid && dirty)}>
+              Save Changes
+            </Button>
+          </>
+        ) : (
+          <></>
+        )}
+
+        {props.formType === "edit" ? (
+          <>
+            <Button variant="secondary" onClick={props.onCancel}>
+              Cancel
+            </Button>
+            <Button
+              variant="primary"
+              type="submit"
+              form="foo"
+              onClick={props.doSubmit}
+              disabled={!(isValid && dirty)}>
+              Save
+            </Button>
+          </>
+        ) : (
+          <></>
+        )}
+
+        {props.formType === "delete" ? (
+          <>
+            <Button variant="secondary" onClick={props.onCancel}>
+              Cancel
+            </Button>
+            <Button
+              variant="primary"
+              type="submit"
+              form="foo"
+              onClick={props.doSubmit}>
+              Confirm
+            </Button>
+          </>
+        ) : (
+          <></>
+        )}
       </Modal.Footer>
     </Modal>
   );
