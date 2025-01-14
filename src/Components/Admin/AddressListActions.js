@@ -18,13 +18,13 @@ export const AddressListActions = (params) => {
             title="Edit"
             onClick={() =>
               handleClickEvent({
-                id: params.data.id,
+                rowData: params.data,
                 event: "edit",
               })
             }
           />
         </div>
-        <div>
+        {/* <div>
           <FontAwesomeIcon
             icon={faTrashCan}
             title="Delete"
@@ -35,7 +35,7 @@ export const AddressListActions = (params) => {
               })
             }
           />
-        </div>
+        </div> */}
       </Stack>
     </>
   );
