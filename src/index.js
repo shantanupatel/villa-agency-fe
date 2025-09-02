@@ -17,6 +17,8 @@ import LoginComponent from "Components/Login/LoginComponent";
 import SignUpComponent from "Components/SignUp/SignUpComponent";
 import AdminDashboard from "Components/Admin/AdminDashboard";
 import ContactUsComponent from "Components/ContactUsComponent";
+import ProfileComponent from "Components/Profile/ProfileComponent";
+import SocialIconsListComponent from 'Components/Admin/SocialIconsListComponent';
 
 const router = createBrowserRouter([
   {
@@ -41,6 +43,10 @@ const router = createBrowserRouter([
         element: <AdminComponent />,
         children: [
           {
+            path: "profile",
+            element: <ProfileComponent />,
+          },
+          {
             path: "dashboard",
             element: <AdminDashboard />,
           },
@@ -51,6 +57,10 @@ const router = createBrowserRouter([
           {
             path: "addresses",
             element: <AddressListComponent />,
+          },
+          {
+            path: "social",
+            element: <SocialIconsListComponent />,
           },
           {
             path: "login",
