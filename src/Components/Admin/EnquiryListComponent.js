@@ -5,6 +5,7 @@ import { EnquiryListColumnDefs } from "../../constants/ColumnDefs";
 import { ToastConfig } from "../../constants/ToastConfig";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import { authHeader } from "services/auth-header";
 
 const EnquiryListComponent = () => {
   // const [enquiries, setEnquiries] = useState([]);
@@ -28,16 +29,30 @@ const EnquiryListComponent = () => {
   };
 
   function fetchEnquiriesData() {
-    fetch(process.env.REACT_APP_API_URL + "/enquiries")
+    fetch(process.env.REACT_APP_API_URL + "/admin/enquiries", {
+      headers: {
+        Authorization: authHeader(),
+      },
+    })
       .then((res) => res.json())
       .then((json) => {
         console.log(json);
-        setRowData(json.data);
-        setBg(ToastConfig.success.bg);
+        if (json.httpStatus === 401) {
+          setBg(ToastConfig.failure.bg);
+          setShowToast(true);
+          setToastHeader(ToastConfig.failure.label);
+          setToastBody("Invalid credentials");
+          setToastAutohide(false);
+        } else if (json.httpStatus === 200) {
+          setRowData(json.data);
+          setBg(ToastConfig.success.bg);
+          setShowToast(true);
+          setToastHeader(ToastConfig.success.label);
+          setToastBody(json.message);
+          setToastAutohide(true);
+        }
+
         setShowToast(true);
-        setToastHeader(ToastConfig.success.label);
-        setToastBody(json.message);
-        setToastAutohide(true);
       })
       .catch((err) => {
         // console.log(err.message)

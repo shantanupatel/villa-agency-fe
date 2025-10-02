@@ -1,3 +1,4 @@
+import { useState } from "react";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { Formik, Form, Field, ErrorMessage } from "formik";
@@ -5,6 +6,8 @@ import * as Yup from "yup";
 import ButtonComponent from "Components/UI/ButtonComponent";
 import { useNavigate } from "react-router-dom";
 import { login } from "services/auth.service";
+import ToastComponent from "Components/Toast/ToastComponent";
+import { ToastConfig } from "constants/ToastConfig";
 
 const initialValues = {
   username: "",
@@ -22,7 +25,13 @@ const schema = Yup.object().shape({
 });
 
 const LoginComponent = (props) => {
+  const [bg, setBg] = useState("success");
+  const [showToast, setShowToast] = useState(false);
+  const [toastHeader, setToastHeader] = useState();
+  const [toastBody, setToastBody] = useState();
+  const [toastAutohide, setToastAutohide] = useState(false);
   const history = useNavigate();
+
   const handleSubmit = async (values) => {
     const { username, password } = values;
 
@@ -31,7 +40,29 @@ const LoginComponent = (props) => {
       password: password,
     };
 
-    login(payload).then(() => history("/admin/dashboard"));
+    login(payload)
+      .then((response) => {
+        const data = response.data;
+
+        setShowToast(true);
+        setBg(ToastConfig.success.bg);
+        setToastHeader(ToastConfig.success.label);
+        setToastBody(data.message);
+        setToastAutohide(true);
+        history("/admin/dashboard");
+        window.location.reload();
+      })
+      .catch((err) => {
+        setShowToast(true);
+        setBg(ToastConfig.info.bg);
+        setToastHeader(ToastConfig.info.label);
+        setToastBody("Invalid credentials");
+        setToastAutohide(false);
+      });
+  };
+
+  const handleToastClose = () => {
+    setShowToast(false);
   };
 
   return (
@@ -43,6 +74,15 @@ const LoginComponent = (props) => {
           </Col>
         </Row>
       </div>
+
+      <ToastComponent
+        bg={bg}
+        show={showToast}
+        handleToastClose={handleToastClose}
+        header={toastHeader}
+        body={toastBody}
+        autohide={toastAutohide}
+      />
 
       <Row>
         <Col sm={{ span: 6, offset: 3 }}>

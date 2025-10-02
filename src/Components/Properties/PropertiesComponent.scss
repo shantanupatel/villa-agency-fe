@@ -2,7 +2,7 @@
 @import "/src/Styles/mixins";
 
 .properties {
-  width: 70%;
+  width: 80%;
   margin: 70px auto 20px;
 
   @include rwd($screen-md-min) {

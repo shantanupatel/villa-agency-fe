@@ -4,27 +4,19 @@ import AddressAddComponent from "./AddressAddComponent";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
-// import Form from "react-bootstrap/Form";
-import ModalComponent from "../Modal/ModalComponent";
 import ToastComponent from "../Toast/ToastComponent";
-import { AddressListColumnDefs } from "../../constants/ColumnDefs";
-import * as DIALOGSIZES from "../../constants/DialogSize";
 import { ToastConfig } from "../../constants/ToastConfig";
-// import {
-//   CitySelect,
-//   CountrySelect,
-//   StateSelect,
-//   RegionSelect,
-// } from "react-country-state-city";
-// import "react-country-state-city/dist/react-country-state-city.css";
-// import { Formik, Form, Field, ErrorMessage } from "formik";
-// import * as Yup from "yup";
-
-const dialogWidth = DIALOGSIZES.EXTRALARGE;
+import { authHeader } from "services/auth-header";
+import axios from "axios";
+import { AddressListActions } from "Components/Admin/AddressListActions";
+import { AddressEditComponent } from "./AddressEditComponent";
+import { AddressDeleteComponent } from "./AddressDeleteComponent";
 
 const AddressListComponent = () => {
   // const [showModal, setShowModal] = useState(false);
   const [open, setOpen] = useState(false);
+  const [openEditModal, setOpenEditModal] = useState(false);
+  const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [bg, setBg] = useState("success");
   const [showToast, setShowToast] = useState(false);
@@ -37,93 +29,114 @@ const AddressListComponent = () => {
   const [toastAddAutohide, setToastAddAutohide] = useState(false);
   const [toastAddHeader, setToastAddHeader] = useState();
   const [toastAddBody, setToastAddBody] = useState();
-  // const toastConfig = {
-  //   show: true,
-  //   delay: 3000,
-  //   autohide: true,
-  //   header: "test header",
-  //   body: "",
-  // };
-  // const [modalData, setModalData] = useState();
   const [rowData, setRowData] = useState([]);
-  const [colDefs] = useState(AddressListColumnDefs);
 
-  // const [region, setRegion] = useState("");
-  // const [countryid, setCountryid] = useState(0);
-  // const [stateid, setstateid] = useState(0);
+  // toaster notification for edit address
+  const [toastEditBg, setToastEditBg] = useState();
+  const [showEditToast, setShowEditToast] = useState(false);
+  const [toastEditAutohide, setToastEditAutohide] = useState(false);
+  const [toastEditHeader, setToastEditHeader] = useState();
+  const [toastEditBody, setToastEditBody] = useState();
 
-  /* const initialValues = {
-    fullname: "",
-    email: "",
-    subject: "",
-    message: "",
-    source: "Web",
-  }; */
+  // toaster notification for delete address
+  // const [toastDeleteBg, setToastDeleteBg] = useState();
+  // const [showDeleteToast, setShowDeleteToast] = useState(false);
+  // const [toastDeleteAutohide, setToastDeleteAutohide] = useState(false);
+  // const [toastDeleteHeader, setToastDeleteHeader] = useState();
+  // const [toastDeleteBody, setToastDeleteBody] = useState();
 
-  /* const schema = Yup.object().shape({
-    fullname: Yup.string()
-      .max(30, "Must be 30 characters or less")
-      .required("Required"),
-    email: Yup.string().email("Invalid email address").required("Required"),
-    subject: Yup.string()
-      .max(50, "Must be 50 characters or less")
-      .required("Required"),
-    message: Yup.string()
-      .max(200, "Must be 200 characters or less")
-      .required("Required"),
-    source: Yup.string()
-      .max(200, "Must be 200 characters or less")
-      .required("Required"),
-  }); */
-
-  /* const handleSubmit = async (values) => {
-    const requestOptions = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
+  // const [colDefs] = useState(AddressListColumnDefs);
+  const [colDefs, setColDefs] = useState([
+    {
+      field: "",
+      width: 50,
+      checkboxSelection: true,
+    },
+    {
+      field: "",
+      cellRenderer: AddressListActions,
+      cellRendererParams: {
+        clicked: handleAddressAction,
       },
-      body: JSON.stringify(values),
-      // body: values,
-    };
-    try {
-      const response = await fetch(
-        process.env.REACT_APP_API_URL + "/enquiries",
-        requestOptions
-      );
-
-      console.log("values: ", values);
-
-      if (response.ok) {
-        console.log("Form submitted", values);
-      } else {
-        console.error("An error occurred when submitting the form");
-      }
-    } catch (error) {
-      console.error("An error occurred when submitting the form", error);
-    }
-  }; */
+      width: 100,
+    },
+    {
+      field: "id",
+      headerName: "ID",
+      width: 100,
+    },
+    {
+      field: "street",
+      headerName: "Street",
+      editable: true,
+      // minWidth: 100,
+      filter: true,
+    },
+    {
+      field: "city",
+      headerName: "City",
+      /* type: "number", */
+      editable: true,
+      filter: true,
+    },
+    {
+      field: "state",
+      headerName: "State",
+      editable: true,
+      maxWidth: 100,
+      filter: true,
+    },
+    {
+      field: "zip",
+      headerName: "Zip",
+      width: 100,
+      filter: true,
+    },
+    {
+      field: "country",
+      headerName: "Country",
+      width: 100,
+      filter: true,
+      resizable: true,
+    },
+    {
+      field: "createdDate",
+      headerName: "Created Date",
+    },
+  ]);
+  const [initialFormData, setInitialFormData] = useState({});
 
   useEffect(() => {
     fetchAddressData();
   }, []);
 
   function fetchAddressData() {
-    fetch(process.env.REACT_APP_API_URL + "/addresses")
-      .then((res) => res.json())
-      .then((json) => {
-        setRowData(json.data);
+    axios
+      .get(process.env.REACT_APP_API_URL + "/addresses", {
+        // headers: authHeader(),
+        headers: {
+          Authorization: authHeader(),
+        },
+      })
+      .then((response) => {
+        setRowData(response.data.data);
         setShowToast(true);
         setBg(ToastConfig.success.bg);
         setToastHeader(ToastConfig.success.label);
-        setToastBody(json.message);
+        setToastBody(response.data.message);
         setToastAutohide(true);
       })
       .catch((err) => {
         setShowToast(true);
         setBg(ToastConfig.failure.bg);
         setToastHeader(ToastConfig.failure.label);
-        setToastBody("Error retrieving list of addresses");
+
+        if (err.status === 401) {
+          setToastBody("Invalid credentials. Kindly login again.");
+        } else {
+          setToastBody("Error retrieving list of addresses");
+        }
+
         setToastAutohide(false);
       });
   }
@@ -142,6 +155,40 @@ const AddressListComponent = () => {
     setOpen(false);
   };
 
+  // function for handling save for Edit modal
+  const handleEditModalSubmit = (values) => {
+    setLoading(true);
+    editExistingAddress(values);
+    setOpenEditModal(false);
+  };
+
+  // function for showing address edit modal
+  function handleShowEditModal() {
+    setOpenEditModal(true);
+  }
+
+  // function for hiding address edit modal
+  function handleHideEditModal() {
+    setOpenEditModal(false);
+  }
+
+  // function for handling delete for Delete modal
+  /* const handleDeleteModalSubmit = (values) => {
+    setLoading(true);
+    deleteExistingAddress(values);
+    setOpenDeleteModal(false);
+  }; */
+
+  // function for showing address delete modal
+  /* function handleShowDeleteModal() {
+    setOpenDeleteModal(true);
+  } */
+
+  // function for hiding address delete modal
+  /* function handleHideDeleteModal() {
+    setOpenDeleteModal(false);
+  } */
+
   const handleToastClose = () => {
     setShowToast(false);
   };
@@ -150,54 +197,132 @@ const AddressListComponent = () => {
     setShowAddToast(false);
   };
 
-  const addNewAddress = async (values) => {
-    const requestOptions = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
-      },
-      body: JSON.stringify(values),
-    };
-    try {
-      const response = await fetch(
-        process.env.REACT_APP_API_URL + "/addresses",
-        requestOptions
-      );
-
-      /* console.log(response);
-      console.log(response.message);
-
-      if (response.ok) {
-        // console.log("Form submitted", values);
-        setOpen(false);
-      } else {
-        console.error("An error occurred when submitting the form");
-      } */
-
-      if (!response.ok) {
-        throw new Error(`Response status: ${response.status}`);
-      }
-
-      const json = await response.json();
-      // console.log(json);
-      // console.log(json.message);
-      setLoading(false);
-      setShowAddToast(true);
-      setToastAddBg(ToastConfig.success.bg);
-      setToastAddHeader(ToastConfig.success.label);
-      setToastAddBody(json.message);
-      setToastAddAutohide(true);
-      fetchAddressData();
-    } catch (error) {
-      // console.error("An error occurred when submitting the form", error);
-      setShowAddToast(true);
-      setToastAddBg(ToastConfig.failure.bg);
-      setToastAddHeader(ToastConfig.failure.label);
-      setToastAddBody("Error saving new address");
-      setToastAddAutohide(false);
-    }
+  const handleEditToastClose = () => {
+    setShowEditToast(false);
   };
+
+  /* const handleDeleteToastClose = () => {
+    setShowDeleteToast(false);
+  }; */
+
+  const addNewAddress = async (values) => {
+    axios
+      .post(
+        process.env.REACT_APP_API_URL + "/addresses",
+        JSON.stringify(values),
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            Authorization: authHeader(),
+          },
+        }
+      )
+      .then((res) => {
+        console.log(res);
+        setShowAddToast(true);
+        setToastAddBg(ToastConfig.success.bg);
+        setToastAddHeader(ToastConfig.success.label);
+        setToastAddBody(res.data.message);
+        setToastAddAutohide(true);
+        fetchAddressData();
+      })
+      .catch((err) => {
+        console.log(err);
+        setShowAddToast(true);
+        setToastAddBg(ToastConfig.failure.bg);
+        setToastAddHeader(ToastConfig.failure.label);
+        // setToastAddBody("Error saving new address");
+        if (err.status === 401) {
+          setToastAddBody("Invalid credentials. Kindly login again.");
+        } else {
+          setToastAddBody("Error saving new address");
+        }
+        setToastAddAutohide(false);
+      });
+  };
+
+  // function for handling edit address
+  const editExistingAddress = async (values) => {
+    axios
+      .put(
+        process.env.REACT_APP_API_URL + "/addresses/" + values?.id,
+        JSON.stringify(values),
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            Authorization: authHeader(),
+          },
+        }
+      )
+      .then((res) => {
+        setShowEditToast(true);
+        setToastEditBg(ToastConfig.success.bg);
+        setToastEditHeader(ToastConfig.success.label);
+        setToastEditBody(res.data.message);
+        setToastEditAutohide(true);
+        setLoading(false);
+        fetchAddressData();
+      })
+      .catch((err) => {
+        setShowEditToast(true);
+        setToastEditBg(ToastConfig.failure.bg);
+        setToastEditHeader(ToastConfig.failure.label);
+
+        if (err.status === 401) {
+          setToastEditBody("Invalid credentials. Kindly login again.");
+        } else {
+          setToastEditBody("Error saving new address");
+        }
+        setLoading(false);
+        setToastEditAutohide(false);
+      });
+  };
+
+  // function for handling delete address
+  /* const deleteExistingAddress = async (values) => {
+    axios
+      .delete(process.env.REACT_APP_API_URL + "/addresses/" + values?.id, {
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+          Authorization: authHeader(),
+        },
+      })
+      .then((res) => {
+        setShowDeleteToast(true);
+        setToastDeleteBg(ToastConfig.success.bg);
+        setToastDeleteHeader(ToastConfig.success.label);
+        setToastDeleteBody(res.data.message);
+        setToastDeleteAutohide(true);
+        setLoading(false);
+        fetchAddressData();
+      })
+      .catch((err) => {
+        setShowDeleteToast(true);
+        setToastDeleteBg(ToastConfig.failure.bg);
+        setToastDeleteHeader(ToastConfig.failure.label);
+
+        if (err.status === 401) {
+          setToastDeleteBody("Invalid credentials. Kindly login again.");
+        } else {
+          setToastDeleteBody("Error deleting address");
+        }
+        setLoading(false);
+        setToastDeleteAutohide(false);
+      });
+  }; */
+
+  function handleAddressAction(val) {
+    if (val?.event === "edit") {
+      setInitialFormData(val);
+      handleShowEditModal();
+      /* } else if (val?.event === "delete") {
+      setInitialFormData(val);
+      handleShowDeleteModal(); */
+    }
+  }
 
   return (
     <>
@@ -239,7 +364,27 @@ const AddressListComponent = () => {
           autohide={toastAutohide}
         />
 
-        {open && (
+        {/* toaster notification for edit address */}
+        <ToastComponent
+          bg={bg}
+          show={showEditToast}
+          handleToastClose={handleEditToastClose}
+          header={toastEditHeader}
+          body={toastEditBody}
+          autohide={toastEditAutohide}
+        />
+
+        {/* toaster notification for delete address */}
+        {/* <ToastComponent
+          bg={bg}
+          show={showDeleteToast}
+          handleToastClose={handleDeleteToastClose}
+          header={toastDeleteHeader}
+          body={toastDeleteBody}
+          autohide={toastDeleteAutohide}
+        /> */}
+
+        {/* {open && (
           <ModalComponent
             size={dialogWidth}
             show={open}
@@ -247,8 +392,36 @@ const AddressListComponent = () => {
             modalTitle="Add Address"
             modalBody={<AddressAddComponent doSubmit={doSubmit} />}
             onCancel={handleHideModal}
+            formType="add"
+          />
+        )} */}
+
+        {open && (
+          <AddressAddComponent
+            show={open}
+            doSubmit={doSubmit}
+            onCancel={handleHideModal}
           />
         )}
+
+        {openEditModal && (
+          <AddressEditComponent
+            show={openEditModal}
+            initialData={initialFormData}
+            doSubmit={handleEditModalSubmit}
+            closeModal={handleHideEditModal}
+          />
+        )}
+
+        {/* {openDeleteModal && (
+          <AddressDeleteComponent
+            show={openDeleteModal}
+            initialData={initialFormData}
+            doSubmit={handleDeleteModalSubmit}
+            closeModal={handleHideDeleteModal}
+            message="Are you sure you want to delete this record?"
+          />
+        )} */}
 
         <GridComponent rowData={rowData} colDefs={colDefs} />
       </div>

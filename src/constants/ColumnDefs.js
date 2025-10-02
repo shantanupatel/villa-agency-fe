@@ -1,36 +1,57 @@
+import { AddressListActions } from "Components/Admin/AddressListActions";
+
 export const AddressListColumnDefs = [
+  {
+    field: "",
+    width: 50,
+    checkboxSelection: true,
+  },
+  {
+    field: "",
+    cellRenderer: AddressListActions,
+    cellRendererParams: {
+      clicked: handleAddressAction,
+    },
+    width: 100,
+  },
   {
     field: "id",
     headerName: "ID",
-    maxWidth: 50,
+    width: 100,
   },
   {
     field: "street",
     headerName: "Street",
     editable: true,
-    minWidth: 100,
+    // minWidth: 100,
+    filter: true,
   },
   {
     field: "city",
     headerName: "City",
     /* type: "number", */
     editable: true,
+    filter: true,
   },
   {
     field: "state",
     headerName: "State",
     editable: true,
     maxWidth: 100,
+    filter: true,
   },
   {
     field: "zip",
     headerName: "Zip",
-    maxWidth: 100,
+    width: 100,
+    filter: true,
   },
   {
     field: "country",
     headerName: "Country",
-    maxWidth: 100,
+    width: 100,
+    filter: true,
+    resizable: true,
   },
   {
     field: "createdDate",
@@ -68,3 +89,7 @@ export const EnquiryListColumnDefs = [
     headerName: "Created Date",
   },
 ];
+
+function handleAddressAction(val) {
+  console.log(val);
+}

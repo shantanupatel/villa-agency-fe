@@ -10,13 +10,10 @@ export const login = (values) => {
     })
     .then((response) => {
       if (response.data.data.accessToken) {
-        localStorage.setItem(
-          "user",
-          JSON.stringify(response.data.data.accessToken)
-        );
+        localStorage.setItem("user", JSON.stringify(response.data.data));
       }
 
-      return response.data;
+      return response;
     });
 };
 
@@ -40,5 +37,6 @@ export const register = (values) => {
 };
 
 export const getCurrentUser = () => {
-  JSON.parse(localStorage.getItem("user"));
+  // console.log("user data: ", JSON.parse(localStorage.getItem("user")));
+  return JSON.parse(localStorage.getItem("user"));
 };
