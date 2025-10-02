@@ -1,14 +1,8 @@
-import { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Spinner from "react-bootstrap/Spinner";
 
 const ModalComponent = (props) => {
-  const [setShow] = useState(false);
-  const handleClose = () => setShow(false);
-
-  // console.log("Modal: ", props.show);
-
   return (
     <Modal
       size={props.size}
