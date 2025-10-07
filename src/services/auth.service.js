@@ -1,4 +1,5 @@
 import axios from "axios";
+import { localStorageGetItem, localStorageSaveItem } from "Utils";
 
 export const login = (values) => {
   const { username, password } = values;
@@ -10,15 +11,18 @@ export const login = (values) => {
     })
     .then((response) => {
       if (response.data.data.accessToken) {
-        localStorage.setItem("user", JSON.stringify(response.data.data));
+        localStorageSaveItem("user", response.data.data);
       }
 
       return response;
     });
 };
 
-export const logout = () => {
-  localStorage.removeItem("user");
+export const logout = async () => {
+  const token = localStorageGetItem("user");
+  const refreshToken = token.refreshToken;
+
+  return await axios.post(process.env.REACT_APP_API_URL + "/auth/logout", {'token': refreshToken}).then((response) => response);
 };
 
 export const register = (values) => {
