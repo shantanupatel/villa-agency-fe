@@ -3,3 +3,13 @@
     @content;
   }
 }
+
+@mixin color-variant($base-color, $percentage, $type: light) {
+  @if $type == "light" {
+    color: lighten($base-color, $percentage);
+  } @else if $type == "dark" {
+    color: darken($base-color, $percentage);
+  } @else {
+    @error "Invalid type for color-variant mixinn. Use 'light' or 'dark'.";
+  }
+}

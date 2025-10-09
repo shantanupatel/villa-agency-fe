@@ -1,5 +1,5 @@
 @import "./Styles/variables";
-// @import "./Styles/mixins";
+@import "./Styles/mixins";
 
 body {
   margin: 0;
@@ -31,4 +31,11 @@ body {
     margin: 0;
     padding: 7px 0;
   }
+}
+
+.form-error {
+  background-color: $breadcrumb-color;
+  border-radius: 5px;
+  @include color-variant($breadcrumb-color, 90%, "light");
+  padding: 5px 10px;
 }
