@@ -29,7 +29,7 @@ const HeaderComponent = () => {
             <div className="col-12">
               <Navbar collapseOnSelect expand="lg">
                 <Navbar.Brand>
-                  <a href="home">
+                  <a href="/">
                     <h1>VILLA</h1>
                   </a>
                 </Navbar.Brand>

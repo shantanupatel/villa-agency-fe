@@ -1,0 +1,24 @@
+@import "/src/Styles/variables";
+// @import "/src/Styles/mixins";
+
+.social-icon {
+  width: 30px;
+  height: 30px;
+  background-color: #cdcdcd;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 14px;
+  // margin: 0 0 0 10px;
+  text-align: center;
+  line-height: 30px;
+
+  a {
+    color: inherit;
+    display: block;
+  }
+
+  &:hover {
+    background-color: $btn-primary;
+    color: #fff;
+  }
+}

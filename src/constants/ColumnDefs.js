@@ -90,6 +90,69 @@ export const EnquiryListColumnDefs = [
   },
 ];
 
+export const SocialIconsListColumnDefs = [
+  { field: "id", headerName: "ID", maxWidth: 50 },
+  {
+    field: "",
+    cellRenderer: AddressListActions,
+    cellRendererParams: {
+      clicked: handleAddressAction,
+    },
+    width: 100,
+  },
+  {
+    field: "platformName",
+    headerName: "Platform",
+    editable: true,
+  },
+  {
+    field: "profileUrl",
+    headerName: "Profile URL",
+    editable: true,
+    width: 300,
+  },
+  {
+    field: "displayName",
+    headerName: "Display Name",
+    editable: true,
+    width: 300,
+  },
+  {
+    field: "createdDate",
+    headerName: "Created Date",
+  },
+];
+
+export const SocialPlatformsListColumnDefs = [
+  { field: "id", headerName: "ID", maxWidth: 50 },
+  {
+    field: "",
+    cellRenderer: AddressListActions,
+    cellRendererParams: {
+      clicked: handleAddressAction,
+    },
+    width: 100,
+  },
+  {
+    field: "platformName",
+    headerName: "Name",
+    editable: true,
+  },
+  {
+    field: "baseUrl",
+    headerName: "Base URL",
+    editable: true,
+  },
+  {
+    field: "createdDate",
+    headerName: "Created Date",
+  },
+  {
+    field: "updatedDate",
+    headerName: "Updated Date",
+  },
+];
+
 function handleAddressAction(val) {
   console.log(val);
 }

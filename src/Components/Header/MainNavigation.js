@@ -1,11 +1,14 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Nav, NavDropdown } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { logout, getCurrentUser } from "services/auth.service";
+import { localStorageRemoveItem } from "Utils";
 
 export const MainNavigation = () => {
-  const [currentUser, setCurrentUser] = useState(null);
+  const [, setCurrentUser] = useState(null);
   const [showAdminDashboard, setShowAdminDashboard] = useState(false);
+  const history = useNavigate();
 
   useEffect(() => {
     getUserFromStorage();
@@ -21,7 +24,19 @@ export const MainNavigation = () => {
   }
 
   function logoutUser() {
-    logout();
+    logout().then(response => {
+      if (response && response.data) {
+        localStorageRemoveItem('user');
+
+        // reset current user details
+        setCurrentUser([]);
+
+        // auto-redirect the user to "/admin/login" route after delay of 10 seconds
+        setTimeout(() => {
+          history("/admin/login");
+        }, 10000);
+      }
+    });
   }
 
   return (
@@ -51,6 +66,10 @@ export const MainNavigation = () => {
             </NavDropdown.Item>
             <NavDropdown.Item as={Link} to="/admin/addresses">
               Address
+            </NavDropdown.Item>
+            <NavDropdown.Item as={Link} to="/admin/social-links">Social Links</NavDropdown.Item>
+            <NavDropdown.Item as={Link} to="/admin/social-platforms">
+              Social Platforms
             </NavDropdown.Item>
             <NavDropdown.Divider />
             <NavDropdown.Item onClick={logoutUser}>Logout</NavDropdown.Item>
