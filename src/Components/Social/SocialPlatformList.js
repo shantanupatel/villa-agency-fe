@@ -19,7 +19,7 @@ const SocialPlatformList = (props) => {
   const [toastAutohide, setToastAutohide] = useState(false);
   const [toastHeader, setToastHeader] = useState();
   const [toastBody, setToastBody] = useState();
-  const [rowData] = useState([]);
+  const [rowData, setRowData] = useState([]);
 
   useEffect(() => {
     fetchSocialPlatformsData();
@@ -31,6 +31,7 @@ const SocialPlatformList = (props) => {
 
   function fetchSocialPlatformsData() {
     axios.get(process.env.REACT_APP_API_URL + "/all/social-platforms").then((res) => {
+      setRowData(res && res.data.data);
       setShowToast(true);
       setBg(ToastConfig.success.bg);
       setToastHeader(ToastConfig.success.label);
@@ -60,14 +61,13 @@ const SocialPlatformList = (props) => {
   }
 
   const doSubmit = (values) => {
-    console.log(values);
     setLoading(true);
     addNewSocialPlatform(values);
     setOpen(false);
   };
 
   const addNewSocialPlatform = async (values) => {
-    axios
+    await axios
       .post(
         process.env.REACT_APP_API_URL + "/admin/social-platforms",
         JSON.stringify(values),
@@ -95,7 +95,7 @@ const SocialPlatformList = (props) => {
         if (err.status === 401) {
           setToastBody("Invalid credentials. Kindly login again.");
         } else {
-          setToastBody("Error saving new address");
+          setToastBody("Error saving new social media platform");
         }
 
         setToastAutohide(false);
