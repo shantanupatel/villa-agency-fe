@@ -41,7 +41,7 @@ const handleSubmit = async (values) => {
   };
   try {
     const response = await fetch(
-      process.env.REACT_APP_API_URL + "/enquiries",
+      process.env.REACT_APP_API_URL + "/all/enquiries",
       requestOptions
     );
 
