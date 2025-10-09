@@ -18,7 +18,8 @@ import SignUpComponent from "Components/SignUp/SignUpComponent";
 import AdminDashboard from "Components/Admin/AdminDashboard";
 import ContactUsComponent from "Components/ContactUsComponent";
 import ProfileComponent from "Components/Profile/ProfileComponent";
-import SocialIconsListComponent from 'Components/Admin/SocialIconsListComponent';
+import SocialLinksList from 'Components/Social/SocialLinksList';
+import SocialPlatformList from 'Components/Social/SocialPlatformList';
 
 const router = createBrowserRouter([
   {
@@ -59,8 +60,12 @@ const router = createBrowserRouter([
             element: <AddressListComponent />,
           },
           {
-            path: "social",
-            element: <SocialIconsListComponent />,
+            path: "social-links",
+            element: <SocialLinksList />,
+          },
+          {
+            path: "social-platforms",
+            element: <SocialPlatformList />,
           },
           {
             path: "login",
@@ -81,8 +86,8 @@ const router = createBrowserRouter([
 ]);
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
-root.render(<RouterProvider router={router} />);
 
+root.render(<RouterProvider future={{ v7_startTransition: true }} router={router} />);
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
