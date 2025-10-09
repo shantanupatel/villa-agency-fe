@@ -2,13 +2,14 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Spinner from "react-bootstrap/Spinner";
 import { useFormikContext } from "formik";
+import * as DIALOGSIZES from "constants/DialogSize";
 
 const ModalComponent = (props) => {
   const { dirty, isValid } = useFormikContext();
 
   return (
     <Modal
-      size={props.size}
+      size={props && props.size ? props.size : DIALOGSIZES.EXTRALARGE}
       show={props.show}
       centered
       scrollable={true}
