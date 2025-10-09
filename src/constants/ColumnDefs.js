@@ -101,13 +101,19 @@ export const SocialIconsListColumnDefs = [
     width: 100,
   },
   {
-    field: "name",
-    headerName: "Name",
+    field: "platformName",
+    headerName: "Platform",
     editable: true,
   },
   {
-    field: "link",
-    headerName: "Link",
+    field: "profileUrl",
+    headerName: "Profile URL",
+    editable: true,
+    width: 300,
+  },
+  {
+    field: "displayName",
+    headerName: "Display Name",
     editable: true,
     width: 300,
   },
@@ -128,13 +134,22 @@ export const SocialPlatformsListColumnDefs = [
     width: 100,
   },
   {
-    field: "name",
+    field: "platformName",
     headerName: "Name",
+    editable: true,
+  },
+  {
+    field: "baseUrl",
+    headerName: "Base URL",
     editable: true,
   },
   {
     field: "createdDate",
     headerName: "Created Date",
+  },
+  {
+    field: "updatedDate",
+    headerName: "Updated Date",
   },
 ];
 
